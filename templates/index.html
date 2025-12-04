@@ -1,13 +1,13 @@
 
-
 <!--
     Incipit Genie Pro™ - Version 5.0
-    Last Updated: 2025-12-04 17:05 UTC
+    Last Updated: 2025-12-04 19:30 UTC
     
     Frontend UI for Incipit Genie Pro blind note converter.
+    Developed by Eric Caplan, PhD
+    
     Works with Flask backend (app.py) that accepts:
       - file: .docx document
-      - word_count: 3-8 (lead-in text length)
       - format_style: 'bold' or 'italic'
 -->
 <!DOCTYPE html>
@@ -485,23 +485,17 @@
                     </div>
                 </div>
 
-                <div class="options-section">
-                    <div class="option-group">
-                        <label>🔢 Lead-in Text Length (words)</label>
-                        <input type="number" id="wordCount" name="word_count" min="3" max="8" value="3">
-                    </div>
-                    <div class="option-group">
-                        <label>📝 Lead-in Text Format</label>
-                        <div class="radio-group">
-                            <label class="radio-label">
-                                <input type="radio" name="format_style" value="bold" checked>
-                                Bold
-                            </label>
-                            <label class="radio-label">
-                                <input type="radio" name="format_style" value="italic">
-                                Italic
-                            </label>
-                        </div>
+                <div class="form-group" style="text-align: center;">
+                    <label style="display: inline-block;">📝 Lead-in Text Format</label>
+                    <div class="radio-group" style="justify-content: center; margin-top: 10px;">
+                        <label class="radio-label">
+                            <input type="radio" name="format_style" value="bold" checked>
+                            Bold
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="format_style" value="italic">
+                            Italic
+                        </label>
                     </div>
                 </div>
 
@@ -533,8 +527,8 @@
         </div>
 
         <div class="info-box">
-            <span class="info-box-title">📖 What Incipit Genie Pro Does</span>
-            Incipit Genie Pro creates blind notes by combining your citations with lead-in text—the words that appear just before each endnote reference in your document. This makes it easy to locate exactly where each note belongs. <strong>Note:</strong> Original citation formatting is always preserved.
+            <span class="info-box-title">📖 What Incipit Genie Pro™ Does</span>
+            Incipit Genie Pro™ creates blind notes by combining your citations with lead-in text—meaningful phrases extracted from your document using semantic analysis. This makes it easy to locate exactly where each note belongs. <strong>Note:</strong> Original citation formatting (italics, bold, etc.) and clickable URLs are always preserved.
         </div>
 
         <div class="pro-tip-box">
@@ -548,7 +542,7 @@
         </div>
 
         <div class="footer-note">
-            Incipit Genie Pro™ 5.0 - Developed through AI Orchestration
+            Incipit Genie Pro™ 5.0 - Developed by Eric Caplan, PhD
         </div>
     </div>
 
@@ -594,8 +588,9 @@
     </div>
 
     <script>
-        // Incipit Genie Pro 5.0
-        // Last Updated: 2025-12-04 17:05 UTC
+        // Incipit Genie Pro™ 5.0
+        // Developed by Eric Caplan, PhD
+        // Last Updated: 2025-12-04 19:30 UTC
         
         const dropZone = document.getElementById('dropZone');
         const fileInput = document.getElementById('file');
@@ -679,7 +674,6 @@
 
             const formData = new FormData();
             formData.append('file', fileInput.files[0]);
-            formData.append('word_count', document.getElementById('wordCount').value);
             formData.append('format_style', document.querySelector('input[name="format_style"]:checked').value);
 
             try {
