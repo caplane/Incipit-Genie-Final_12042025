@@ -3,6 +3,8 @@ document_processor.py
 
 Direct XML manipulation of Word documents for incipit note conversion.
 
+Updated: 2025-12-04 20:35 UTC
+
 This module handles:
 1. Extracting docx files (which are zip archives)
 2. Parsing document.xml to find endnote references
@@ -563,7 +565,7 @@ class DocumentProcessor:
         run_period = ET.SubElement(para, f'{{{w}}}r')
         period_text = ET.SubElement(run_period, f'{{{w}}}t')
         period_text.set('{http://www.w3.org/XML/1998/namespace}space', 'preserve')
-        period_text.text = ".  "  # Period followed by TWO spaces
+        period_text.text = "  "  # TWO spaces (no period)
         
         # --- Incipit phrase (bold or italic based on format_style) ---
         run_incipit = ET.SubElement(para, f'{{{w}}}r')
