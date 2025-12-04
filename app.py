@@ -18,600 +18,779 @@ app = Flask(__name__)
 app.config['MAX_CONTENT_LENGTH'] = 50 * 1024 * 1024  # 50MB max upload
 
 # HTML template embedded for simplicity
+# Updated: 2025-12-04 - Incipit Genie Pro 5.0
 HTML_TEMPLATE = '''
+<!--
+    Incipit Genie Pro™ - Version 5.0
+    Last Updated: 2025-12-04 17:05 UTC
+    
+    Frontend UI for Incipit Genie Pro blind note converter.
+    Works with Flask backend (app.py) that accepts:
+      - file: .docx document
+      - word_count: 3-8 (lead-in text length)
+      - format_style: 'bold' or 'italic'
+-->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Incipit Genie</title>
+    <title>Incipit Genie Pro 5.0 - Patent Pending | Academic Source Notes Generator</title>
+    <meta name="description" content="Incipit Genie Pro converts your endnotes into blind notes, adding lead-in text from your document and automatic page markers for easy reference. Patent Pending.">
     <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --background: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-primary: #2c3e50;
+            --text-secondary: #7f8c8d;
+            --border-radius: 10px;
+            --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-            color: #e8e8e8;
-            padding: 40px 20px;
+            padding: 20px;
+            padding-bottom: 50px;
         }
-        
         .container {
             max-width: 800px;
             margin: 0 auto;
+            animation: fadeIn 0.5s ease-in;
         }
-        
-        header {
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .header {
             text-align: center;
             margin-bottom: 40px;
+            color: white;
         }
-        
-        h1 {
-            font-size: 3rem;
-            background: linear-gradient(135deg, #e94560, #ff6b6b);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+        .header h1 {
+            font-size: 2.5rem;
             margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
         }
-        
-        .subtitle {
-            font-size: 1.2rem;
-            color: #a0a0a0;
-        }
-        
-        .upload-section {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 20px;
-            padding: 40px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            margin-bottom: 30px;
-        }
-        
-        .drop-zone {
-            border: 2px dashed rgba(233, 69, 96, 0.5);
-            border-radius: 15px;
-            padding: 60px 40px;
-            text-align: center;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-        
-        .drop-zone:hover, .drop-zone.dragover {
-            border-color: #e94560;
-            background: rgba(233, 69, 96, 0.1);
-        }
-        
-        .drop-zone-icon {
-            font-size: 4rem;
-            margin-bottom: 20px;
-        }
-        
-        .drop-zone-text {
-            font-size: 1.2rem;
-            margin-bottom: 10px;
-        }
-        
-        .drop-zone-hint {
-            color: #888;
-            font-size: 0.9rem;
-        }
-        
-        #fileInput {
-            display: none;
-        }
-        
-        .file-info {
-            display: none;
-            background: rgba(233, 69, 96, 0.1);
-            border-radius: 10px;
-            padding: 15px 20px;
-            margin-top: 20px;
-            align-items: center;
-            justify-content: space-between;
-        }
-        
-        .file-info.visible {
-            display: flex;
-        }
-        
-        .file-name {
-            font-weight: 500;
-        }
-        
-        .file-size {
-            color: #888;
-            font-size: 0.9rem;
-        }
-        
-        .remove-file {
-            background: none;
-            border: none;
-            color: #e94560;
-            cursor: pointer;
-            font-size: 1.5rem;
-            padding: 5px;
-        }
-        
-        .btn {
+        .version-badge {
             display: inline-block;
-            padding: 15px 40px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        
-        .btn-primary {
-            background: linear-gradient(135deg, #e94560, #ff6b6b);
-            color: white;
-            width: 100%;
-            margin-top: 20px;
-        }
-        
-        .btn-primary:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(233, 69, 96, 0.3);
-        }
-        
-        .btn-primary:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-        
-        .progress-container {
-            display: none;
-            margin-top: 30px;
-        }
-        
-        .progress-container.visible {
-            display: block;
-        }
-        
-        .progress-bar {
-            height: 6px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 3px;
-            overflow: hidden;
-        }
-        
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(135deg, #e94560, #ff6b6b);
-            width: 0%;
-            transition: width 0.3s ease;
-        }
-        
-        .progress-text {
-            text-align: center;
-            margin-top: 10px;
-            color: #888;
-        }
-        
-        .result-section {
-            display: none;
-            text-align: center;
-        }
-        
-        .result-section.visible {
-            display: block;
-        }
-        
-        .success-icon {
-            font-size: 4rem;
-            color: #4ade80;
-            margin-bottom: 20px;
-        }
-        
-        .error-icon {
-            font-size: 4rem;
-            color: #ef4444;
-            margin-bottom: 20px;
-        }
-        
-        .btn-download {
-            background: linear-gradient(135deg, #4ade80, #22c55e);
-            color: white;
-        }
-        
-        .btn-download:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(74, 222, 128, 0.3);
-        }
-        
-        .info-section {
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(255,255,255,0.2);
+            padding: 5px 15px;
             border-radius: 20px;
-            padding: 30px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+            backdrop-filter: blur(10px);
+            margin-right: 10px;
         }
-        
-        .info-section h2 {
-            color: #e94560;
-            margin-bottom: 20px;
-            font-size: 1.3rem;
+        .patent-badge {
+            display: inline-block;
+            background: rgba(255,215,0,0.3);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+            backdrop-filter: blur(10px);
+            font-weight: 600;
+            border: 1px solid rgba(255,255,255,0.3);
         }
-        
-        .info-section h3 {
-            color: #ff6b6b;
-            margin: 20px 0 10px;
+        .header p {
             font-size: 1.1rem;
+            opacity: 0.95;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.5;
         }
-        
-        .info-section p, .info-section li {
-            color: #a0a0a0;
-            line-height: 1.6;
+        .main-card {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 25px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        .file-upload-wrapper {
+            position: relative;
+            border: 2px dashed #ccc;
+            border-radius: 8px;
+            padding: 30px;
+            text-align: center;
+            transition: all 0.3s ease;
+            background: #fafafa;
+            cursor: pointer;
+        }
+        .file-upload-wrapper:hover {
+            border-color: var(--secondary-color);
+            background: #f0f7ff;
+        }
+        .file-upload-wrapper.drag-over {
+            border-color: var(--secondary-color);
+            background: #e3f2fd;
+            transform: scale(1.01);
+        }
+        .file-upload-wrapper input[type="file"] {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+        .file-upload-label {
+            display: block;
+            font-size: 1.1rem;
+            color: var(--text-primary);
             margin-bottom: 10px;
         }
-        
-        .info-section ul {
-            margin-left: 20px;
+        .file-upload-icon {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
         }
-        
-        .example-box {
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 10px;
-            padding: 20px;
-            margin: 15px 0;
-            font-family: monospace;
-            font-size: 0.9rem;
+        .file-upload-text {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
         }
-        
-        .example-label {
-            color: #e94560;
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-        
-        .reset-btn {
-            background: none;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: #a0a0a0;
+        .file-selected {
             margin-top: 15px;
-            padding: 10px 30px;
+            padding: 10px;
+            background: var(--success-color);
+            color: white;
+            border-radius: 6px;
+            display: none;
+        }
+        .file-selected.show {
+            display: block;
         }
         
-        .reset-btn:hover {
-            border-color: #e94560;
-            color: #e94560;
-        }
-        
+        /* Options Section */
         .options-section {
-            margin-top: 25px;
-            padding: 20px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .options-row {
             display: flex;
             gap: 40px;
+            margin-bottom: 25px;
             flex-wrap: wrap;
         }
-        
         .option-group {
             flex: 1;
-            min-width: 200px;
+            min-width: 180px;
         }
-        
         .option-group label {
             display: block;
-            margin-bottom: 10px;
-            font-weight: 500;
-            color: #e8e8e8;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-primary);
         }
-        
         .option-group input[type="number"] {
-            width: 80px;
+            width: 70px;
             padding: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 2px solid #e1e8ed;
             border-radius: 6px;
-            background: rgba(0, 0, 0, 0.3);
-            color: #e8e8e8;
             font-size: 1rem;
+            text-align: center;
         }
-        
         .option-group input[type="number"]:focus {
             outline: none;
-            border-color: #e94560;
+            border-color: var(--secondary-color);
         }
-        
         .radio-group {
             display: flex;
             gap: 20px;
+            align-items: center;
+            padding-top: 5px;
         }
-        
         .radio-label {
             display: flex;
             align-items: center;
             cursor: pointer;
-            padding: 8px 15px;
+            font-size: 1rem;
+            color: var(--text-primary);
+        }
+        .radio-label input[type="radio"] {
+            margin-right: 6px;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: var(--secondary-color);
+        }
+        
+        .btn {
+            padding: 14px 28px;
+            border: none;
             border-radius: 6px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(118, 75, 162, 0.3);
+        }
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(118, 75, 162, 0.4);
+        }
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .btn-secondary {
+            background: var(--warning-color);
+            color: white;
+            margin-right: 10px;
+        }
+        .btn-secondary:hover {
+            background: #e67e22;
+            transform: translateY(-2px);
+        }
+        .button-group {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        .info-box {
+            background: #e8f4fd;
+            border-left: 4px solid var(--secondary-color);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .info-box-title {
+            font-weight: 600;
+            color: var(--secondary-color);
+            display: block;
+            margin-bottom: 10px;
+        }
+        .pro-tip-box {
+            background: linear-gradient(135deg, #f6f8fb 0%, #e9ecef 100%);
+            border-left: 4px solid var(--warning-color);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .pro-tip-title {
+            font-weight: 600;
+            color: var(--warning-color);
+            display: block;
+            margin-bottom: 10px;
+        }
+        .footer-note {
+            text-align: center;
+            color: white;
+            opacity: 0.8;
+            font-size: 0.9rem;
+            margin-top: 20px;
+            font-style: italic;
+            margin-bottom: 50px;
+        }
+        .legal-notice {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to right, rgba(0,0,0,0.95), rgba(44,62,80,0.95));
+            color: #fff;
+            padding: 10px 20px;
+            text-align: center;
+            font-size: 11px;
+            z-index: 9999;
+            border-top: 2px solid rgba(255,215,0,0.3);
+            backdrop-filter: blur(10px);
+            line-height: 1.6;
+        }
+        .legal-notice a {
+            color: #ffd700;
+            text-decoration: none;
+            margin: 0 5px;
+            font-weight: 600;
             transition: all 0.2s;
         }
-        
-        .radio-label:hover {
-            border-color: #e94560;
+        .legal-notice a:hover {
+            text-decoration: underline;
+            color: #ffed4e;
         }
-        
-        .radio-label input[type="radio"] {
-            margin-right: 8px;
+        .legal-separator {
+            margin: 0 10px;
+            color: rgba(255,255,255,0.4);
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 10000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            animation: fadeIn 0.3s;
+        }
+        .modal-content {
+            background: white;
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            animation: slideDown 0.3s;
+        }
+        .modal-content h2 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+        .modal-content h3 {
+            color: var(--secondary-color);
+            margin: 20px 0 10px;
+        }
+        .modal-content p {
+            margin: 10px 0;
+            line-height: 1.6;
+        }
+        .modal-close {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 5px;
             cursor: pointer;
+            font-weight: 600;
         }
-        
-        .radio-label.selected {
-            border-color: #e94560;
-            background: rgba(233, 69, 96, 0.1);
+        .modal-close:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102,126,234,0.4);
         }
-        
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
+        .progress-container {
+            display: none;
+            margin-top: 20px;
         }
-        
-        .processing {
-            animation: pulse 1.5s infinite;
+        .progress-container.active {
+            display: block;
+        }
+        .progress-bar {
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        .progress-text {
+            text-align: center;
+            margin-top: 10px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        .result-area {
+            display: none;
+            text-align: center;
+            padding: 30px;
+            background: #f0fff4;
+            border-radius: 8px;
+            margin-top: 20px;
+            border: 2px solid var(--success-color);
+        }
+        .result-area.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        .result-area.error {
+            background: #fff5f5;
+            border-color: var(--accent-color);
+        }
+        .result-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+        .btn-download {
+            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+            color: white;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 15px;
+        }
+        .btn-download:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(39, 174, 96, 0.4);
+        }
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        @media (max-width: 768px) {
+            .main-card {
+                padding: 25px;
+            }
+            .header h1 {
+                font-size: 2rem;
+            }
+            .options-section {
+                flex-direction: column;
+                gap: 20px;
+            }
+            .button-group {
+                flex-direction: column;
+            }
+            .btn {
+                width: 100%;
+            }
+            .legal-notice {
+                font-size: 10px;
+                padding: 8px 10px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <header>
-            <h1>✨ Incipit Genie</h1>
-            <p class="subtitle">Transform endnotes into elegant incipit notes</p>
-        </header>
-        
-        <div class="upload-section" id="uploadSection">
-            <div class="drop-zone" id="dropZone">
-                <div class="drop-zone-icon">📄</div>
-                <div class="drop-zone-text">Drop your Word document here</div>
-                <div class="drop-zone-hint">or click to browse (.docx files only)</div>
-            </div>
-            <input type="file" id="fileInput" accept=".docx">
-            
-            <div class="file-info" id="fileInfo">
-                <div>
-                    <div class="file-name" id="fileName"></div>
-                    <div class="file-size" id="fileSize"></div>
+        <div class="header">
+            <div class="version-badge">Version 5.0</div>
+            <div class="patent-badge">🔒 Patent Pending</div>
+            <h1>📚 Incipit Genie Pro™</h1>
+            <p>Incipit Genie Pro converts your endnotes into blind notes, adding lead-in text from your document and automatic page markers for easy reference</p>
+        </div>
+
+        <div class="main-card">
+            <form id="convertForm">
+                <div class="form-group">
+                    <label>📁 Select Word Document (.docx)</label>
+                    <div class="file-upload-wrapper" id="dropZone">
+                        <div class="file-upload-icon">📂</div>
+                        <div class="file-upload-label">Drag & Drop your Word document here</div>
+                        <div class="file-upload-text">or click to browse</div>
+                        <input type="file" name="file" id="file" accept=".docx" required>
+                        <div class="file-selected" id="fileSelected"></div>
+                    </div>
                 </div>
-                <button class="remove-file" id="removeFile">&times;</button>
-            </div>
-            
-            <div class="options-section">
-                <div class="options-row">
+
+                <div class="options-section">
                     <div class="option-group">
                         <label>🔢 Lead-in Text Length (words)</label>
-                        <input type="number" id="wordCount" min="3" max="8" value="3">
+                        <input type="number" id="wordCount" name="word_count" min="3" max="8" value="3">
                     </div>
                     <div class="option-group">
                         <label>📝 Lead-in Text Format</label>
                         <div class="radio-group">
-                            <label class="radio-label selected">
-                                <input type="radio" name="formatStyle" value="bold" checked> Bold
+                            <label class="radio-label">
+                                <input type="radio" name="format_style" value="bold" checked>
+                                Bold
                             </label>
                             <label class="radio-label">
-                                <input type="radio" name="formatStyle" value="italic"> Italic
+                                <input type="radio" name="format_style" value="italic">
+                                Italic
                             </label>
                         </div>
                     </div>
                 </div>
-            </div>
-            
-            <button class="btn btn-primary" id="processBtn" disabled>
-                Transform Document
-            </button>
-            
-            <div class="progress-container" id="progressContainer">
-                <div class="progress-bar">
-                    <div class="progress-fill" id="progressFill"></div>
+
+                <div class="progress-container" id="progressContainer">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <div class="progress-text" id="progressText">Processing...</div>
                 </div>
-                <div class="progress-text" id="progressText">Processing...</div>
-            </div>
+
+                <div class="result-area" id="resultArea">
+                    <div class="result-icon" id="resultIcon">✅</div>
+                    <h3 id="resultTitle">Conversion Complete!</h3>
+                    <p id="resultMessage">Your document has been converted to incipit format.</p>
+                    <a href="#" class="btn btn-download" id="downloadBtn" download>
+                        ⬇️ Download Converted Document
+                    </a>
+                </div>
+
+                <div class="button-group" id="buttonGroup">
+                    <button type="button" class="btn btn-secondary" onclick="resetForm()">
+                        ↻ RESET
+                    </button>
+                    <button type="submit" class="btn btn-primary" id="convertBtn">
+                        ✨ CONVERT DOCUMENT
+                    </button>
+                </div>
+            </form>
         </div>
-        
-        <div class="result-section" id="resultSection">
-            <div id="resultContent"></div>
-            <button class="btn reset-btn" id="resetBtn">Process Another Document</button>
+
+        <div class="info-box">
+            <span class="info-box-title">📖 What Incipit Genie Pro Does</span>
+            Incipit Genie Pro creates blind notes by combining your citations with lead-in text—the words that appear just before each endnote reference in your document. This makes it easy to locate exactly where each note belongs. <strong>Note:</strong> Original citation formatting is always preserved.
         </div>
-        
-        <div class="info-section">
-            <h2>How It Works</h2>
-            <p>Incipit Genie transforms traditional endnotes into incipit (blind) notes by:</p>
-            <ul>
-                <li>Extracting meaningful phrases from your text using punctuation-based semantic analysis</li>
-                <li>Removing superscript numbers from the main body</li>
-                <li>Adding dynamic page references that update automatically</li>
-            </ul>
-            
-            <h3>Example Transformation</h3>
-            <div class="example-box">
-                <div class="example-label">BEFORE:</div>
-                <p>Main text: "Because it is the 'I' behind the 'eye' that does the seeing.<sup>1</sup>"</p>
-                <p>Endnote: "1. Anaïs Nin, The Diary of Anaïs Nin..."</p>
-            </div>
-            <div class="example-box">
-                <div class="example-label">AFTER:</div>
-                <p>Main text: "Because it is the 'I' behind the 'eye' that does the seeing."</p>
-                <p>Note: "<em>89</em>.&nbsp;&nbsp;<strong>Because it is:</strong> Anaïs Nin, The Diary of Anaïs Nin..."</p>
-            </div>
-            
-            <h3>Updating Page Numbers</h3>
-            <p>After opening the transformed document in Word, press <strong>Ctrl+A</strong> (select all) 
-            then <strong>F9</strong> to update all page references.</p>
+
+        <div class="pro-tip-box">
+            <span class="pro-tip-title">💡 Pro Tip: Update Page Numbers</span>
+            After opening your converted document in Word:
+            <ol style="margin: 10px 0 0 20px;">
+                <li>Press <strong>Ctrl+A</strong> (Windows) or <strong>Cmd+A</strong> (Mac) to select all</li>
+                <li>Press <strong>F9</strong> to update all page number fields</li>
+                <li>Page numbers will automatically adjust when you edit the document!</li>
+            </ol>
+        </div>
+
+        <div class="footer-note">
+            Incipit Genie Pro™ 5.0 - Developed through AI Orchestration
         </div>
     </div>
-    
+
+    <div class="legal-notice">
+        <strong>© 2025 Incipit Genie Pro™</strong>
+        <span class="legal-separator">|</span>
+        <strong>Patent Pending</strong>
+        <span class="legal-separator">|</span>
+        Protected under 17 U.S.C. §1201 (DMCA) & §106 (Copyright)
+        <span class="legal-separator">|</span>
+        <a href="#" onclick="showTerms(); return false;">Terms of Use</a>
+        <span class="legal-separator">|</span>
+        <a href="#" onclick="showPrivacy(); return false;">Privacy Policy</a>
+        <br>
+        <small style="opacity: 0.8;">Unauthorized reproduction, reverse engineering, or distribution is strictly prohibited</small>
+    </div>
+
+    <div id="termsModal" class="modal">
+        <div class="modal-content">
+            <h2>Terms of Use - Incipit Genie Pro™</h2>
+            <p><strong>Effective Date:</strong> December 2025</p>
+            <h3>1. Acceptance of Terms</h3>
+            <p>By using Incipit Genie Pro™, you agree to these Terms of Use and acknowledge that this is proprietary, patent-pending technology.</p>
+            <h3>2. Intellectual Property Rights</h3>
+            <p>Incipit Genie Pro™ and all associated algorithms, processes, and code are the exclusive property of the developer and are protected by:</p>
+            <ul>
+                <li>• U.S. Patent Application (Patent Pending)</li>
+                <li>• Copyright law (17 U.S.C. §106)</li>
+                <li>• DMCA protections (17 U.S.C. §1201)</li>
+                <li>• Trade secret law</li>
+            </ul>
+            <button class="modal-close" onclick="closeTerms()">I Understand</button>
+        </div>
+    </div>
+
+    <div id="privacyModal" class="modal">
+        <div class="modal-content">
+            <h2>Privacy Policy - Incipit Genie Pro™</h2>
+            <p><strong>Last Updated:</strong> December 2025</p>
+            <p>We do not share your documents with third parties. Documents are deleted immediately after processing.</p>
+            <button class="modal-close" onclick="closePrivacy()">Close</button>
+        </div>
+    </div>
+
     <script>
+        // Incipit Genie Pro 5.0
+        // Last Updated: 2025-12-04 17:05 UTC
+        
         const dropZone = document.getElementById('dropZone');
-        const fileInput = document.getElementById('fileInput');
-        const fileInfo = document.getElementById('fileInfo');
-        const fileName = document.getElementById('fileName');
-        const fileSize = document.getElementById('fileSize');
-        const removeFile = document.getElementById('removeFile');
-        const processBtn = document.getElementById('processBtn');
+        const fileInput = document.getElementById('file');
+        const fileSelected = document.getElementById('fileSelected');
+        const convertForm = document.getElementById('convertForm');
         const progressContainer = document.getElementById('progressContainer');
         const progressFill = document.getElementById('progressFill');
         const progressText = document.getElementById('progressText');
-        const uploadSection = document.getElementById('uploadSection');
-        const resultSection = document.getElementById('resultSection');
-        const resultContent = document.getElementById('resultContent');
-        const resetBtn = document.getElementById('resetBtn');
-        
-        let selectedFile = null;
-        
-        // Drag and drop handlers
-        dropZone.addEventListener('click', () => fileInput.click());
-        
-        dropZone.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            dropZone.classList.add('dragover');
+        const resultArea = document.getElementById('resultArea');
+        const resultIcon = document.getElementById('resultIcon');
+        const resultTitle = document.getElementById('resultTitle');
+        const resultMessage = document.getElementById('resultMessage');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const buttonGroup = document.getElementById('buttonGroup');
+        const convertBtn = document.getElementById('convertBtn');
+
+        // Prevent default drag behaviors
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, preventDefaults, false);
+            document.body.addEventListener(eventName, preventDefaults, false);
         });
-        
-        dropZone.addEventListener('dragleave', () => {
-            dropZone.classList.remove('dragover');
-        });
-        
-        dropZone.addEventListener('drop', (e) => {
+
+        function preventDefaults(e) {
             e.preventDefault();
-            dropZone.classList.remove('dragover');
+            e.stopPropagation();
+        }
+
+        // Highlight drop zone when dragging over
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropZone.addEventListener(eventName, () => dropZone.classList.add('drag-over'), false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, () => dropZone.classList.remove('drag-over'), false);
+        });
+
+        // Handle dropped files
+        dropZone.addEventListener('drop', function(e) {
             const files = e.dataTransfer.files;
             if (files.length > 0) {
-                handleFile(files[0]);
+                const file = files[0];
+                if (file.name.endsWith('.docx')) {
+                    fileInput.files = files;
+                    showFileSelected(file.name);
+                } else {
+                    alert('Please upload a Word document (.docx)');
+                }
             }
         });
-        
-        fileInput.addEventListener('change', (e) => {
-            if (e.target.files.length > 0) {
-                handleFile(e.target.files[0]);
+
+        // Handle file selection via click
+        fileInput.addEventListener('change', function() {
+            if (this.files.length > 0) {
+                showFileSelected(this.files[0].name);
             }
         });
-        
-        function handleFile(file) {
-            if (!file.name.endsWith('.docx')) {
-                alert('Please select a .docx file');
+
+        function showFileSelected(fileName) {
+            fileSelected.innerHTML = `✅ File selected: <strong>${fileName}</strong>`;
+            fileSelected.classList.add('show');
+            // Reset result area when new file selected
+            resultArea.classList.remove('active');
+        }
+
+        // Form submission
+        convertForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            if (!fileInput.files[0]) {
+                alert('Please select a file first');
                 return;
             }
+
+            // Show progress
+            progressContainer.classList.add('active');
+            resultArea.classList.remove('active');
+            convertBtn.disabled = true;
             
-            selectedFile = file;
-            fileName.textContent = file.name;
-            fileSize.textContent = formatFileSize(file.size);
-            fileInfo.classList.add('visible');
-            processBtn.disabled = false;
-        }
-        
-        function formatFileSize(bytes) {
-            if (bytes < 1024) return bytes + ' B';
-            if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
-            return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
-        }
-        
-        removeFile.addEventListener('click', () => {
-            selectedFile = null;
-            fileInput.value = '';
-            fileInfo.classList.remove('visible');
-            processBtn.disabled = true;
-        });
-        
-        processBtn.addEventListener('click', async () => {
-            if (!selectedFile) return;
-            
-            processBtn.disabled = true;
-            progressContainer.classList.add('visible');
             progressFill.style.width = '20%';
             progressText.textContent = 'Uploading document...';
-            
+
             const formData = new FormData();
-            formData.append('file', selectedFile);
+            formData.append('file', fileInput.files[0]);
             formData.append('word_count', document.getElementById('wordCount').value);
-            formData.append('format_style', document.querySelector('input[name="formatStyle"]:checked').value);
-            
+            formData.append('format_style', document.querySelector('input[name="format_style"]:checked').value);
+
             try {
-                progressFill.style.width = '40%';
+                progressFill.style.width = '50%';
                 progressText.textContent = 'Extracting incipits...';
-                
+
                 const response = await fetch('/process', {
                     method: 'POST',
                     body: formData
                 });
-                
+
                 progressFill.style.width = '80%';
                 progressText.textContent = 'Generating document...';
-                
+
                 if (response.ok) {
                     const blob = await response.blob();
                     const url = window.URL.createObjectURL(blob);
                     
+                    // Get filename from Content-Disposition header or generate one
+                    const contentDisposition = response.headers.get('Content-Disposition');
+                    let filename = fileInput.files[0].name.replace('.docx', '_incipit.docx');
+                    if (contentDisposition) {
+                        const match = contentDisposition.match(/filename="?([^"]+)"?/);
+                        if (match) filename = match[1];
+                    }
+
                     progressFill.style.width = '100%';
                     progressText.textContent = 'Complete!';
-                    
+
+                    // Show success result
                     setTimeout(() => {
-                        showResult(true, url, selectedFile.name);
+                        progressContainer.classList.remove('active');
+                        resultArea.classList.remove('error');
+                        resultArea.classList.add('active');
+                        resultIcon.textContent = '✅';
+                        resultTitle.textContent = 'Conversion Complete!';
+                        resultMessage.textContent = 'Your document has been converted to incipit format.';
+                        downloadBtn.href = url;
+                        downloadBtn.download = filename;
+                        downloadBtn.style.display = 'inline-block';
+                        convertBtn.disabled = false;
                     }, 500);
+
                 } else {
                     const error = await response.json();
-                    showResult(false, null, null, error.error);
+                    throw new Error(error.error || 'Conversion failed');
                 }
-            } catch (err) {
-                showResult(false, null, null, err.message);
+
+            } catch (error) {
+                progressContainer.classList.remove('active');
+                resultArea.classList.add('active', 'error');
+                resultIcon.textContent = '❌';
+                resultTitle.textContent = 'Conversion Failed';
+                resultMessage.textContent = error.message;
+                downloadBtn.style.display = 'none';
+                convertBtn.disabled = false;
             }
         });
-        
-        function showResult(success, url, originalName, errorMsg) {
-            uploadSection.style.display = 'none';
-            resultSection.classList.add('visible');
-            
-            if (success) {
-                const newName = originalName.replace('.docx', '_incipit.docx');
-                resultContent.innerHTML = `
-                    <div class="success-icon">✓</div>
-                    <h2>Transformation Complete!</h2>
-                    <p style="margin: 20px 0; color: #888;">Your document has been converted to incipit format.</p>
-                    <a href="${url}" download="${newName}" class="btn btn-download">
-                        Download ${newName}
-                    </a>
-                    <p style="margin-top: 20px; color: #666; font-size: 0.9rem;">
-                        Remember: Open in Word, press Ctrl+A then F9 to update page numbers
-                    </p>
-                `;
-            } else {
-                resultContent.innerHTML = `
-                    <div class="error-icon">✕</div>
-                    <h2>Processing Failed</h2>
-                    <p style="margin: 20px 0; color: #888;">${errorMsg || 'An error occurred while processing your document.'}</p>
-                `;
+
+        function resetForm() {
+            convertForm.reset();
+            fileSelected.classList.remove('show');
+            progressContainer.classList.remove('active');
+            resultArea.classList.remove('active', 'error');
+            progressFill.style.width = '0%';
+            convertBtn.disabled = false;
+        }
+
+        // Modal functions
+        function showTerms() {
+            document.getElementById('termsModal').style.display = 'block';
+        }
+
+        function closeTerms() {
+            document.getElementById('termsModal').style.display = 'none';
+        }
+
+        function showPrivacy() {
+            document.getElementById('privacyModal').style.display = 'block';
+        }
+
+        function closePrivacy() {
+            document.getElementById('privacyModal').style.display = 'none';
+        }
+
+        // Close modals when clicking outside
+        window.onclick = function(event) {
+            if (event.target.className === 'modal') {
+                event.target.style.display = 'none';
             }
         }
-        
-        resetBtn.addEventListener('click', () => {
-            selectedFile = null;
-            fileInput.value = '';
-            fileInfo.classList.remove('visible');
-            processBtn.disabled = true;
-            progressContainer.classList.remove('visible');
-            progressFill.style.width = '0%';
-            resultSection.classList.remove('visible');
-            uploadSection.style.display = 'block';
-        });
-        
-        // Radio button styling
-        document.querySelectorAll('input[name="formatStyle"]').forEach(radio => {
-            radio.addEventListener('change', () => {
-                document.querySelectorAll('.radio-label').forEach(label => {
-                    label.classList.remove('selected');
-                });
-                radio.closest('.radio-label').classList.add('selected');
-            });
-        });
     </script>
 </body>
 </html>
