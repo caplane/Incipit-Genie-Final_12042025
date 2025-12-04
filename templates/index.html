@@ -1,15 +1,3 @@
-
-<!--
-    Incipit Genie Pro™ - Version 5.0
-    Last Updated: 2025-12-04 19:30 UTC
-    
-    Frontend UI for Incipit Genie Pro blind note converter.
-    Developed by Eric Caplan, PhD
-    
-    Works with Flask backend (app.py) that accepts:
-      - file: .docx document
-      - format_style: 'bold' or 'italic'
--->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -31,11 +19,13 @@
             --border-radius: 10px;
             --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
             line-height: 1.6;
@@ -45,29 +35,30 @@
             padding: 20px;
             padding-bottom: 50px;
         }
+
         .container {
             max-width: 800px;
             margin: 0 auto;
             animation: fadeIn 0.5s ease-in;
         }
+
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+
         .header {
             text-align: center;
             margin-bottom: 40px;
             color: white;
         }
+
         .header h1 {
             font-size: 2.5rem;
             margin-bottom: 10px;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
         }
+
         .version-badge {
             display: inline-block;
             background: rgba(255,255,255,0.2);
@@ -78,6 +69,7 @@
             backdrop-filter: blur(10px);
             margin-right: 10px;
         }
+
         .patent-badge {
             display: inline-block;
             background: rgba(255,215,0,0.3);
@@ -89,6 +81,7 @@
             font-weight: 600;
             border: 1px solid rgba(255,255,255,0.3);
         }
+
         .header p {
             font-size: 1.1rem;
             opacity: 0.95;
@@ -96,6 +89,7 @@
             margin: 0 auto;
             line-height: 1.5;
         }
+
         .main-card {
             background: var(--card-bg);
             border-radius: var(--border-radius);
@@ -103,362 +97,339 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.2);
             margin-bottom: 20px;
         }
+
         .form-group {
             margin-bottom: 25px;
         }
+
         .form-group label {
             display: block;
             margin-bottom: 8px;
             font-weight: 600;
             color: var(--text-primary);
         }
-        .file-upload-wrapper {
-            position: relative;
-            border: 2px dashed #ccc;
-            border-radius: 8px;
-            padding: 30px;
-            text-align: center;
-            transition: all 0.3s ease;
-            background: #fafafa;
-            cursor: pointer;
-        }
-        .file-upload-wrapper:hover {
-            border-color: var(--secondary-color);
-            background: #f0f7ff;
-        }
-        .file-upload-wrapper.drag-over {
-            border-color: var(--secondary-color);
-            background: #e3f2fd;
-            transform: scale(1.01);
-        }
-        .file-upload-wrapper input[type="file"] {
-            position: absolute;
+
+        .form-control {
             width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-            opacity: 0;
-            cursor: pointer;
-        }
-        .file-upload-label {
-            display: block;
-            font-size: 1.1rem;
-            color: var(--text-primary);
-            margin-bottom: 10px;
-        }
-        .file-upload-icon {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-        }
-        .file-upload-text {
-            color: var(--text-secondary);
-            font-size: 0.95rem;
-        }
-        .file-selected {
-            margin-top: 15px;
-            padding: 10px;
-            background: var(--success-color);
-            color: white;
-            border-radius: 6px;
-            display: none;
-        }
-        .file-selected.show {
-            display: block;
-        }
-        
-        /* Options Section */
-        .options-section {
-            display: flex;
-            gap: 40px;
-            margin-bottom: 25px;
-            flex-wrap: wrap;
-        }
-        .option-group {
-            flex: 1;
-            min-width: 180px;
-        }
-        .option-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: var(--text-primary);
-        }
-        .option-group input[type="number"] {
-            width: 70px;
-            padding: 10px;
+            padding: 12px;
             border: 2px solid #e1e8ed;
             border-radius: 6px;
             font-size: 1rem;
-            text-align: center;
+            transition: border-color 0.3s ease;
         }
-        .option-group input[type="number"]:focus {
+
+        .form-control:focus {
             outline: none;
             border-color: var(--secondary-color);
         }
-        .radio-group {
-            display: flex;
-            gap: 20px;
-            align-items: center;
-            padding-top: 5px;
-        }
-        .radio-label {
-            display: flex;
-            align-items: center;
+
+        .file-upload-area {
+            border: 2px dashed #ccc;
+            border-radius: 10px;
+            padding: 40px;
+            text-align: center;
             cursor: pointer;
-            font-size: 1rem;
-            color: var(--text-primary);
+            transition: all 0.3s ease;
+            background: #fafafa;
         }
-        .radio-label input[type="radio"] {
-            margin-right: 6px;
-            width: 18px;
-            height: 18px;
-            cursor: pointer;
-            accent-color: var(--secondary-color);
+
+        .file-upload-area:hover {
+            border-color: var(--secondary-color);
+            background: #f0f8ff;
         }
-        
+
+        .file-upload-area.drag-over {
+            border-color: var(--success-color);
+            background: #e8f5e9;
+        }
+
+        .file-upload-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
         .btn {
-            padding: 14px 28px;
+            padding: 12px 30px;
             border: none;
             border-radius: 6px;
             font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
         }
+
         .btn-primary {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            box-shadow: 0 4px 15px rgba(118, 75, 162, 0.3);
         }
-        .btn-primary:hover:not(:disabled) {
+
+        .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(118, 75, 162, 0.4);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
         }
+
         .btn-primary:disabled {
-            opacity: 0.5;
+            opacity: 0.6;
             cursor: not-allowed;
+            transform: none;
         }
+
         .btn-secondary {
-            background: var(--warning-color);
-            color: white;
+            background: #e1e8ed;
+            color: var(--text-primary);
             margin-right: 10px;
         }
+
         .btn-secondary:hover {
-            background: #e67e22;
-            transform: translateY(-2px);
+            background: #d1d8dd;
         }
+
         .button-group {
             display: flex;
             justify-content: center;
             gap: 15px;
-            margin-top: 30px;
+            margin-top: 20px;
         }
+
         .info-box {
-            background: #e8f4fd;
+            background: linear-gradient(135deg, #e8f4fd 0%, #d1e8ff 100%);
             border-left: 4px solid var(--secondary-color);
-            border-radius: var(--border-radius);
-            padding: 20px;
+            padding: 15px 20px;
             margin: 20px 0;
+            border-radius: 0 8px 8px 0;
         }
+
         .info-box-title {
-            font-weight: 600;
+            font-weight: 700;
             color: var(--secondary-color);
-            display: block;
-            margin-bottom: 10px;
+            margin-bottom: 5px;
         }
+
         .pro-tip-box {
-            background: linear-gradient(135deg, #f6f8fb 0%, #e9ecef 100%);
+            background: linear-gradient(135deg, #fff8e1 0%, #ffecb3 100%);
             border-left: 4px solid var(--warning-color);
-            border-radius: var(--border-radius);
-            padding: 20px;
-            margin-top: 20px;
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
         }
+
         .pro-tip-title {
-            font-weight: 600;
-            color: var(--warning-color);
+            font-weight: 700;
+            color: #e65100;
             display: block;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
-        .footer-note {
-            text-align: center;
-            color: white;
-            opacity: 0.8;
-            font-size: 0.9rem;
-            margin-top: 20px;
-            font-style: italic;
-            margin-bottom: 50px;
-        }
-        .legal-notice {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: linear-gradient(to right, rgba(0,0,0,0.95), rgba(44,62,80,0.95));
-            color: #fff;
-            padding: 10px 20px;
-            text-align: center;
-            font-size: 11px;
-            z-index: 9999;
-            border-top: 2px solid rgba(255,215,0,0.3);
-            backdrop-filter: blur(10px);
-            line-height: 1.6;
-        }
-        .legal-notice a {
-            color: #ffd700;
-            text-decoration: none;
-            margin: 0 5px;
-            font-weight: 600;
-            transition: all 0.2s;
-        }
-        .legal-notice a:hover {
-            text-decoration: underline;
-            color: #ffed4e;
-        }
-        .legal-separator {
-            margin: 0 10px;
-            color: rgba(255,255,255,0.4);
-        }
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 10000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.8);
-            animation: fadeIn 0.3s;
-        }
-        .modal-content {
-            background: white;
-            margin: 5% auto;
-            padding: 30px;
-            border-radius: 10px;
-            width: 90%;
-            max-width: 600px;
-            max-height: 80vh;
-            overflow-y: auto;
-            animation: slideDown 0.3s;
-        }
-        .modal-content h2 {
-            color: var(--primary-color);
-            margin-bottom: 20px;
-            border-bottom: 2px solid #eee;
-            padding-bottom: 10px;
-        }
-        .modal-content h3 {
-            color: var(--secondary-color);
-            margin: 20px 0 10px;
-        }
-        .modal-content p {
-            margin: 10px 0;
-            line-height: 1.6;
-        }
-        .modal-close {
-            margin-top: 20px;
-            padding: 10px 20px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: 600;
-        }
-        .modal-close:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(102,126,234,0.4);
-        }
+
         .progress-container {
             display: none;
-            margin-top: 20px;
+            margin: 20px 0;
         }
+
         .progress-container.active {
             display: block;
         }
+
         .progress-bar {
             height: 8px;
-            background: #e9ecef;
+            background: #e1e8ed;
             border-radius: 4px;
             overflow: hidden;
         }
+
         .progress-fill {
             height: 100%;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             width: 0%;
             transition: width 0.3s ease;
         }
+
         .progress-text {
             text-align: center;
             margin-top: 10px;
             color: var(--text-secondary);
-            font-size: 0.9rem;
         }
+
         .result-area {
             display: none;
             text-align: center;
             padding: 30px;
-            background: #f0fff4;
-            border-radius: 8px;
+            border-radius: 10px;
             margin-top: 20px;
-            border: 2px solid var(--success-color);
         }
+
         .result-area.active {
             display: block;
-            animation: fadeIn 0.5s ease;
         }
+
+        .result-area.success {
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+        }
+
         .result-area.error {
-            background: #fff5f5;
-            border-color: var(--accent-color);
+            background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
         }
+
         .result-icon {
-            font-size: 3rem;
+            font-size: 48px;
             margin-bottom: 15px;
         }
-        .btn-download {
-            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
-            color: white;
-            text-decoration: none;
+
+        .download-btn {
             display: inline-block;
             margin-top: 15px;
+            padding: 12px 30px;
+            background: var(--success-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 600;
+            transition: all 0.3s ease;
         }
-        .btn-download:hover {
+
+        .download-btn:hover {
+            background: #219a52;
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(39, 174, 96, 0.4);
         }
-        .loading {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(255,255,255,.3);
-            border-radius: 50%;
-            border-top-color: white;
-            animation: spin 1s ease-in-out infinite;
+
+        .footer-note {
+            text-align: center;
+            color: var(--text-secondary);
+            margin-top: 30px;
+            font-size: 0.9rem;
         }
-        @keyframes spin {
-            to { transform: rotate(360deg); }
+
+        .legal-notice {
+            text-align: center;
+            padding: 15px;
+            background: rgba(0,0,0,0.3);
+            color: white;
+            font-size: 0.85rem;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            backdrop-filter: blur(10px);
         }
-        @media (max-width: 768px) {
-            .main-card {
-                padding: 25px;
-            }
+
+        .legal-notice a {
+            color: #ffd54f;
+            text-decoration: none;
+        }
+
+        .legal-notice a:hover {
+            text-decoration: underline;
+        }
+
+        .legal-separator {
+            margin: 0 10px;
+            opacity: 0.5;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.7);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .modal-content h2 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e1e8ed;
+        }
+
+        .modal-content h3 {
+            color: var(--secondary-color);
+            margin: 20px 0 10px 0;
+        }
+
+        .modal-content ul {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+
+        .modal-content li {
+            margin-bottom: 5px;
+        }
+
+        .modal-close {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            margin-top: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .modal-close:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .file-selected {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 15px;
+            background: #e8f5e9;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+
+        .file-selected.show {
+            display: flex;
+        }
+
+        .file-selected-icon {
+            font-size: 24px;
+        }
+
+        .file-selected-name {
+            font-weight: 600;
+            color: var(--success-color);
+        }
+
+        @media (max-width: 600px) {
             .header h1 {
-                font-size: 2rem;
+                font-size: 1.8rem;
             }
-            .options-section {
-                flex-direction: column;
-                gap: 20px;
+
+            .main-card {
+                padding: 20px;
             }
+
             .button-group {
                 flex-direction: column;
             }
-            .btn {
-                width: 100%;
-            }
-            .legal-notice {
-                font-size: 10px;
-                padding: 8px 10px;
+
+            .btn-secondary {
+                margin-right: 0;
+                margin-bottom: 10px;
             }
         }
     </style>
@@ -466,83 +437,66 @@
 <body>
     <div class="container">
         <div class="header">
-            <div class="version-badge">Version 5.0</div>
-            <div class="patent-badge">🔒 Patent Pending</div>
-            <h1>📚 Incipit Genie Pro™</h1>
-            <p>Incipit Genie Pro converts your endnotes into blind notes, adding lead-in text from your document and automatic page markers for easy reference</p>
+            <h1>✨ Incipit Genie Pro™</h1>
+            <span class="version-badge">Version 5.0</span>
+            <span class="patent-badge">🔒 Patent Pending</span>
+            <p>Transform your endnotes into elegant source notes with automatic incipit phrases and dynamic page references</p>
         </div>
 
         <div class="main-card">
-            <form id="convertForm">
+            <form id="convertForm" enctype="multipart/form-data">
                 <div class="form-group">
-                    <label>📁 Select Word Document (.docx)</label>
-                    <div class="file-upload-wrapper" id="dropZone">
-                        <div class="file-upload-icon">📂</div>
-                        <div class="file-upload-label">Drag & Drop your Word document here</div>
-                        <div class="file-upload-text">or click to browse</div>
-                        <input type="file" name="file" id="file" accept=".docx" required>
-                        <div class="file-selected" id="fileSelected"></div>
+                    <label>📄 Upload Your Word Document</label>
+                    <div class="file-upload-area" id="dropZone">
+                        <div class="file-upload-icon">📁</div>
+                        <p><strong>Drop your .docx file here</strong></p>
+                        <p style="color: var(--text-secondary); margin-top: 5px;">or click to browse</p>
+                        <input type="file" id="file" name="file" accept=".docx" style="display: none;" required>
                     </div>
-                </div>
-
-                <div class="form-group" style="text-align: center;">
-                    <label style="display: inline-block;">📝 Lead-in Text Format</label>
-                    <div class="radio-group" style="justify-content: center; margin-top: 10px;">
-                        <label class="radio-label">
-                            <input type="radio" name="format_style" value="bold" checked>
-                            Bold
-                        </label>
-                        <label class="radio-label">
-                            <input type="radio" name="format_style" value="italic">
-                            Italic
-                        </label>
+                    <div class="file-selected" id="fileSelected">
+                        <span class="file-selected-icon">✅</span>
+                        <span class="file-selected-name" id="fileName"></span>
                     </div>
-                </div>
-
-                <div class="progress-container" id="progressContainer">
-                    <div class="progress-bar">
-                        <div class="progress-fill" id="progressFill"></div>
-                    </div>
-                    <div class="progress-text" id="progressText">Processing...</div>
-                </div>
-
-                <div class="result-area" id="resultArea">
-                    <div class="result-icon" id="resultIcon">✅</div>
-                    <h3 id="resultTitle">Conversion Complete!</h3>
-                    <p id="resultMessage">Your document has been converted to incipit format.</p>
-                    <a href="#" class="btn btn-download" id="downloadBtn" download>
-                        ⬇️ Download Converted Document
-                    </a>
                 </div>
 
                 <div class="button-group" id="buttonGroup">
-                    <button type="button" class="btn btn-secondary" onclick="resetForm()">
-                        ↻ RESET
-                    </button>
-                    <button type="submit" class="btn btn-primary" id="convertBtn">
-                        ✨ CONVERT DOCUMENT
-                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="resetForm()">Reset</button>
+                    <button type="submit" class="btn btn-primary" id="convertBtn">Convert Document</button>
                 </div>
             </form>
-        </div>
 
-        <div class="info-box">
-            <span class="info-box-title">📖 What Incipit Genie Pro™ Does</span>
-            Incipit Genie Pro™ creates blind notes by combining your citations with lead-in text—meaningful phrases extracted from your document using semantic analysis. This makes it easy to locate exactly where each note belongs. <strong>Note:</strong> Original citation formatting (italics, bold, etc.) and clickable URLs are always preserved.
-        </div>
+            <div class="progress-container" id="progressContainer">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <div class="progress-text" id="progressText">Processing your document...</div>
+            </div>
 
-        <div class="pro-tip-box">
-            <span class="pro-tip-title">💡 Pro Tip: Update Page Numbers</span>
-            After opening your converted document in Word:
-            <ol style="margin: 10px 0 0 20px;">
-                <li>Press <strong>Ctrl+A</strong> (Windows) or <strong>Cmd+A</strong> (Mac) to select all</li>
-                <li>Press <strong>F9</strong> to update all page number fields</li>
-                <li>Page numbers will automatically adjust when you edit the document!</li>
-            </ol>
-        </div>
+            <div class="result-area" id="resultArea">
+                <div class="result-icon" id="resultIcon"></div>
+                <h3 id="resultTitle"></h3>
+                <p id="resultMessage"></p>
+                <a href="#" class="download-btn" id="downloadBtn" style="display: none;">Download Converted Document</a>
+            </div>
 
-        <div class="footer-note">
-            Incipit Genie Pro™ 5.0 - Developed by Eric Caplan, PhD
+            <div class="info-box">
+                <div class="info-box-title">📝 How It Works</div>
+                Incipit Genie extracts the first few words from each endnote reference location in your document and prepends them to your notes. Dynamic page markers are inserted so you can always find exactly where each note belongs. <strong>URLs in your citations are preserved as clickable hyperlinks.</strong> <strong>Note:</strong> Original citation formatting is always preserved.
+            </div>
+
+            <div class="pro-tip-box">
+                <span class="pro-tip-title">💡 Pro Tip: Update Page Numbers</span>
+                After opening your converted document in Word:
+                <ol style="margin: 10px 0 0 20px;">
+                    <li>Press <strong>Ctrl+A</strong> (Windows) or <strong>Cmd+A</strong> (Mac) to select all</li>
+                    <li>Press <strong>F9</strong> to update all page number fields</li>
+                    <li>Page numbers will automatically adjust when you edit the document!</li>
+                </ol>
+            </div>
+
+            <div class="footer-note">
+                Incipit Genie Pro™ 5.0 - Created by Eric Caplan
+            </div>
         </div>
     </div>
 
@@ -564,8 +518,10 @@
         <div class="modal-content">
             <h2>Terms of Use - Incipit Genie Pro™</h2>
             <p><strong>Effective Date:</strong> December 2025</p>
+            
             <h3>1. Acceptance of Terms</h3>
             <p>By using Incipit Genie Pro™, you agree to these Terms of Use and acknowledge that this is proprietary, patent-pending technology.</p>
+            
             <h3>2. Intellectual Property Rights</h3>
             <p>Incipit Genie Pro™ and all associated algorithms, processes, and code are the exclusive property of the developer and are protected by:</p>
             <ul>
@@ -574,6 +530,46 @@
                 <li>• DMCA protections (17 U.S.C. §1201)</li>
                 <li>• Trade secret law</li>
             </ul>
+            
+            <h3>3. Prohibited Activities</h3>
+            <p>You expressly agree NOT to:</p>
+            <ul>
+                <li>• Reverse engineer, decompile, or disassemble the service</li>
+                <li>• Copy, modify, or create derivative works</li>
+                <li>• Attempt to discover source code or algorithms</li>
+                <li>• Use automated tools to scrape or mass-process documents</li>
+                <li>• Redistribute or resell the service</li>
+                <li>• Remove any proprietary notices</li>
+            </ul>
+            
+            <h3>4. Service Usage</h3>
+            <p>• This service is provided "as is" for academic and research purposes</p>
+            <p>• We reserve the right to limit usage or terminate access</p>
+            <p>• Maximum 20 document conversions per day per user</p>
+            
+            <h3>5. Privacy & Data</h3>
+            <p>• Documents are processed temporarily and not stored permanently</p>
+            <p>• We log usage data for security and improvement purposes</p>
+            <p>• We do not share your documents with third parties</p>
+            
+            <h3>6. Disclaimer of Warranties</h3>
+            <p>THE SERVICE IS PROVIDED "AS IS" WITHOUT WARRANTIES OF ANY KIND, EXPRESS OR IMPLIED.</p>
+            
+            <h3>7. Limitation of Liability</h3>
+            <p>IN NO EVENT SHALL THE DEVELOPER BE LIABLE FOR ANY DAMAGES ARISING FROM USE OF THIS SERVICE.</p>
+            
+            <h3>8. Legal Action</h3>
+            <p>Violation of these terms may result in:</p>
+            <ul>
+                <li>• Immediate termination of access</li>
+                <li>• Legal action for damages</li>
+                <li>• Injunctive relief</li>
+                <li>• Criminal prosecution under DMCA</li>
+            </ul>
+            
+            <h3>9. Contact</h3>
+            <p>For licensing inquiries or questions about these terms, contact the developer.</p>
+            
             <button class="modal-close" onclick="closeTerms()">I Understand</button>
         </div>
     </div>
@@ -582,16 +578,46 @@
         <div class="modal-content">
             <h2>Privacy Policy - Incipit Genie Pro™</h2>
             <p><strong>Last Updated:</strong> December 2025</p>
-            <p>We do not share your documents with third parties. Documents are deleted immediately after processing.</p>
+            
+            <h3>1. Information We Collect</h3>
+            <p>• Document content (temporarily, for processing only)</p>
+            <p>• IP addresses (for security and rate limiting)</p>
+            <p>• Browser information (for compatibility)</p>
+            <p>• Usage statistics (anonymous)</p>
+            
+            <h3>2. How We Use Information</h3>
+            <p>• To provide the citation conversion service</p>
+            <p>• To prevent abuse and ensure security</p>
+            <p>• To improve service quality</p>
+            <p>• To enforce usage limits</p>
+            
+            <h3>3. Data Retention</h3>
+            <p>• Documents: Deleted immediately after processing</p>
+            <p>• Logs: Retained for 30 days</p>
+            <p>• No permanent storage of user documents</p>
+            
+            <h3>4. Data Security</h3>
+            <p>• Encrypted transmission (HTTPS)</p>
+            <p>• Temporary processing only</p>
+            <p>• No third-party access to documents</p>
+            
+            <h3>5. Third-Party Services</h3>
+            <p>• Hosted on Railway (infrastructure)</p>
+            <p>• No document content shared with third parties</p>
+            
+            <h3>6. Your Rights</h3>
+            <p>• Documents are not stored, so no retrieval is possible</p>
+            <p>• You may request deletion of usage logs</p>
+            <p>• Opt out of service at any time</p>
+            
+            <h3>7. Changes to Privacy Policy</h3>
+            <p>We may update this policy periodically. Continued use constitutes acceptance of changes.</p>
+            
             <button class="modal-close" onclick="closePrivacy()">Close</button>
         </div>
     </div>
 
     <script>
-        // Incipit Genie Pro™ 5.0
-        // Developed by Eric Caplan, PhD
-        // Last Updated: 2025-12-04 19:30 UTC
-        
         const dropZone = document.getElementById('dropZone');
         const fileInput = document.getElementById('file');
         const fileSelected = document.getElementById('fileSelected');
@@ -618,7 +644,7 @@
             e.stopPropagation();
         }
 
-        // Highlight drop zone when dragging over
+        // Highlight drop zone
         ['dragenter', 'dragover'].forEach(eventName => {
             dropZone.addEventListener(eventName, () => dropZone.classList.add('drag-over'), false);
         });
@@ -628,86 +654,77 @@
         });
 
         // Handle dropped files
-        dropZone.addEventListener('drop', function(e) {
+        dropZone.addEventListener('drop', (e) => {
             const files = e.dataTransfer.files;
-            if (files.length > 0) {
-                const file = files[0];
-                if (file.name.endsWith('.docx')) {
-                    fileInput.files = files;
-                    showFileSelected(file.name);
-                } else {
-                    alert('Please upload a Word document (.docx)');
-                }
+            if (files.length > 0 && files[0].name.endsWith('.docx')) {
+                fileInput.files = files;
+                showSelectedFile(files[0].name);
             }
         });
 
-        // Handle file selection via click
-        fileInput.addEventListener('change', function() {
-            if (this.files.length > 0) {
-                showFileSelected(this.files[0].name);
+        // Handle click to upload
+        dropZone.addEventListener('click', () => fileInput.click());
+
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                showSelectedFile(e.target.files[0].name);
             }
         });
 
-        function showFileSelected(fileName) {
-            fileSelected.innerHTML = `✅ File selected: <strong>${fileName}</strong>`;
+        function showSelectedFile(name) {
+            document.getElementById('fileName').textContent = name;
             fileSelected.classList.add('show');
-            // Reset result area when new file selected
-            resultArea.classList.remove('active');
         }
 
         // Form submission
-        convertForm.addEventListener('submit', async function(e) {
+        convertForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            
-            if (!fileInput.files[0]) {
-                alert('Please select a file first');
+
+            if (!fileInput.files.length) {
+                alert('Please select a file first.');
                 return;
             }
 
-            // Show progress
-            progressContainer.classList.add('active');
-            resultArea.classList.remove('active');
-            convertBtn.disabled = true;
-            
-            progressFill.style.width = '20%';
-            progressText.textContent = 'Uploading document...';
-
             const formData = new FormData();
             formData.append('file', fileInput.files[0]);
-            formData.append('format_style', document.querySelector('input[name="format_style"]:checked').value);
+
+            // Show progress
+            progressContainer.classList.add('active');
+            resultArea.classList.remove('active', 'success', 'error');
+            convertBtn.disabled = true;
+
+            // Simulate progress
+            let progress = 0;
+            const progressInterval = setInterval(() => {
+                progress += Math.random() * 15;
+                if (progress > 90) progress = 90;
+                progressFill.style.width = progress + '%';
+            }, 200);
 
             try {
-                progressFill.style.width = '50%';
-                progressText.textContent = 'Extracting incipits...';
-
                 const response = await fetch('/process', {
                     method: 'POST',
                     body: formData
                 });
 
-                progressFill.style.width = '80%';
-                progressText.textContent = 'Generating document...';
+                clearInterval(progressInterval);
+                progressFill.style.width = '100%';
 
                 if (response.ok) {
                     const blob = await response.blob();
                     const url = window.URL.createObjectURL(blob);
-                    
-                    // Get filename from Content-Disposition header or generate one
                     const contentDisposition = response.headers.get('Content-Disposition');
-                    let filename = fileInput.files[0].name.replace('.docx', '_incipit.docx');
+                    let filename = 'converted_document.docx';
                     if (contentDisposition) {
                         const match = contentDisposition.match(/filename="?([^"]+)"?/);
                         if (match) filename = match[1];
                     }
 
-                    progressFill.style.width = '100%';
-                    progressText.textContent = 'Complete!';
-
                     // Show success result
                     setTimeout(() => {
                         progressContainer.classList.remove('active');
                         resultArea.classList.remove('error');
-                        resultArea.classList.add('active');
+                        resultArea.classList.add('active', 'success');
                         resultIcon.textContent = '✅';
                         resultTitle.textContent = 'Conversion Complete!';
                         resultMessage.textContent = 'Your document has been converted to incipit format.';
@@ -723,6 +740,7 @@
                 }
 
             } catch (error) {
+                clearInterval(progressInterval);
                 progressContainer.classList.remove('active');
                 resultArea.classList.add('active', 'error');
                 resultIcon.textContent = '❌';
@@ -737,7 +755,7 @@
             convertForm.reset();
             fileSelected.classList.remove('show');
             progressContainer.classList.remove('active');
-            resultArea.classList.remove('active', 'error');
+            resultArea.classList.remove('active', 'error', 'success');
             progressFill.style.width = '0%';
             convertBtn.disabled = false;
         }
